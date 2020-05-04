@@ -2,7 +2,7 @@ package version
 
 import (
 	"fmt"
-	"github.com/Benbentwo/go-bin-generic/pkg/github"
+	"github.com/Benbentwo/bens-binary/pkg/github"
 	"github.com/Benbentwo/utils/util"
 	"github.com/blang/semver"
 	"io"
@@ -47,7 +47,7 @@ func (o *VersionOptions) InstallBin(upgrade bool, prefix string, version string)
 	if err == nil && binDir != nonStandardBinDir {
 		binDir = nonStandardBinDir
 	}
-	binary := Repo
+	binary := Binary
 	fileName := binary
 	if !upgrade {
 		f, flag, err := ShouldInstallBinary(binary)
@@ -78,9 +78,10 @@ func (o *VersionOptions) InstallBin(upgrade bool, prefix string, version string)
 		protocol = ""
 	}
 
+	// Set in the makefile
 	BinaryDownloadBaseURL := strings.Join([]string{GitServer, Org, Repo, "releases", "download", prefix}, "/")
-	// BinaryDownloadBaseURL := "https://github.com/Benbentwo/go-bin-generic/releases/download/v1.0.0/
-	// 							 https://github.com/Benbentwo/go-bin-generic/releases/download/v1.0.0/go-bin-generic-windows-amd64.zip"
+	// BinaryDownloadBaseURL := "https://github.com/Benbentwo/bens-binary/releases/download/v1.0.0/
+	// 							 https://github.com/Benbentwo/bens-binary/releases/download/v1.0.0/bens-binary-windows-amd64.zip"
 	clientURL := fmt.Sprintf("%s%s%s/"+binary+"-%s-%s%s", protocol, BinaryDownloadBaseURL, version, runtime.GOOS, runtime.GOARCH, extension)
 	fullPath := filepath.Join(binDir, fileName)
 	if runtime.GOOS == "windows" {
