@@ -16,18 +16,20 @@ import (
 )
 
 const (
-	OptionBatchMode = "batch-mode"
-	OptionVerbose   = "verbose"
+	OptionBatchMode    = "batch-mode"
+	OptionVerbose      = "verbose"
+	OptionExperimental = "experimental"
 )
 
 type CommonOptions struct {
-	Cmd       *cobra.Command
-	Args      []string
-	BatchMode bool
-	Verbose   bool
-	In        terminal.FileReader
-	Out       terminal.FileWriter
-	Err       io.Writer
+	Cmd          *cobra.Command
+	Args         []string
+	BatchMode    bool
+	Verbose      bool
+	In           terminal.FileReader
+	Out          terminal.FileWriter
+	Err          io.Writer
+	Experimental bool
 }
 
 // AddBaseFlags adds the base flags for all commands
@@ -38,6 +40,7 @@ func (o *CommonOptions) AddBaseFlags(cmd *cobra.Command) {
 	}
 	cmd.PersistentFlags().BoolVarP(&o.BatchMode, OptionBatchMode, "b", defaultBatchMode, "Runs in batch mode without prompting for user input")
 	cmd.PersistentFlags().BoolVarP(&o.Verbose, OptionVerbose, "", false, "Enables verbose output")
+	cmd.PersistentFlags().BoolVarP(&o.Verbose, OptionExperimental, "", false, "Enables Experimental Options")
 
 	o.Cmd = cmd
 }
