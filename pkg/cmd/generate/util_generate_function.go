@@ -2,7 +2,9 @@ package generate
 
 import (
 	"bufio"
+	"context"
 	"github.com/Benbentwo/bens-binary/pkg/cmd/common"
+	github_helpers "github.com/Benbentwo/bens-binary/pkg/github"
 	"github.com/Benbentwo/utils/util"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -18,6 +20,9 @@ import (
 // This should be found in the template_base.txt
 const BASE_COMMAND_INSERT_LINE = `Section to add commands to:`
 const BASE_COMMAND_TEMPLATE = `template_base.txt`
+
+// https://gist.github.com/Benbentwo/7f0d31820b4228864ba4dc00fb17767b
+const DefaultGistForTemplates = "7f0d31820b4228864ba4dc00fb17767b"
 
 var (
 	TemplateFUNctionMap = template.FuncMap{
@@ -78,7 +83,7 @@ func NewCmdGenerateFunction(commonOpts *common.CommonOptions) *cobra.Command {
 	}
 
 	cmd := &cobra.Command{
-		Use:     "generate-function",
+		Use:     "go-code",
 		Short:   "Generates a go file for adding a new command",
 		Long:    util_generate_function_long,
 		Example: util_generate_function_example,
@@ -99,7 +104,22 @@ func NewCmdGenerateFunction(commonOpts *common.CommonOptions) *cobra.Command {
 // Run implements this command
 func (o *GenerateFunctionOptions) Run() error {
 	var err error
-	o.TemplateFile, err = util.Pick("What template would you like to use?", util.ListFilesInDirFilter("./templates", `(.*\.txt)`), "template_command.txt")
+	localTemplates := "./templates"
+	ex, err := util.DirExists(localTemplates)
+	availableTemplates := make([]string, 0)
+	if err != nil {
+		return errors.Errorf("local template dir issue: %s", err)
+	} else if ex {
+		availableTemplates = util.ListFilesInDirFilter(localTemplates, `(.*\.txt)`)
+	} else {
+		// TODO get Files from GIST
+		return common.ErrorUnimplemented()
+		_, _, _ = github_helpers.GetClient().Gists.Get(context.Background(), DefaultGistForTemplates)
+		// 	TODO
+		// parse Gists object files into readable Templates
+	}
+
+	o.TemplateFile, err = util.Pick("What template would you like to use?", availableTemplates, "template_command.txt")
 	check(err)
 
 	var isBase = o.TemplateFile == BASE_COMMAND_TEMPLATE

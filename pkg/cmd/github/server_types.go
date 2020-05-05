@@ -1,7 +1,7 @@
 package github
 
 import (
-	"github.com/Benbentwo/bb/pkg/log"
+	"github.com/Benbentwo/utils/util"
 )
 
 const (

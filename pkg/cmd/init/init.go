@@ -31,7 +31,7 @@ type InitFlags struct {
 	ProjectsDir string
 }
 
-var logs = util.Logger
+var logs = util.Logger()
 
 var (
 	initLong = `
@@ -126,7 +126,7 @@ func (o *InitOptions) Run() error {
 					if _, err = f.WriteString("export BB_HOME=" + path + carriage); err != nil {
 						panic(err)
 					}
-					util.Logger().Debugf("Updated Bash Profile to include BB_HOME")
+					logs.Debugf("Updated Bash Profile to include BB_HOME")
 				}
 			}
 
@@ -158,9 +158,9 @@ func CreateFileIfNotFound(configPath string) error {
 	exists, err := util.FileExists(configPath)
 	check(err)
 	if exists {
-		util.Logger().Infof(configPath + " file found.")
+		logs.Infof(configPath + " file found.")
 	} else {
-		util.Logger().Infof(configPath + " file NOT found, creating...")
+		logs.Infof(configPath + " file NOT found, creating...")
 		_, err = os.Create(configPath)
 		if err != nil {
 			return err
@@ -201,16 +201,16 @@ func SetupGitConfigFile(configPath string, o common.CommonOptions) {
 
 	if !hasServers {
 
-		serverName, err := util.PickValue("Git Server Name:", "","What would you like to name this gitServer?", false)
+		serverName, err := util.PickValue("Git Server Name:", "", "What would you like to name this gitServer?", false)
 		if err != nil {
 			panic(err)
 		}
-		kind, err := util.Pick( "Which Git Server would you like to add", github.ServerTypes,"What is your remote repository kind?")
+		kind, err := util.Pick("Which Git Server would you like to add", github.ServerTypes, "What is your remote repository kind?")
 		if err != nil {
 			panic(err)
 		}
 		defaultUrl := github.GetDefaultUrlFromGitServer(kind)
-		url, err := util.PickValue("Git Server URL:", defaultUrl, "What would you like to name this gitServer?",false)
+		url, err := util.PickValue("Git Server URL:", defaultUrl, "What would you like to name this gitServer?", false)
 		if err != nil {
 			panic(err)
 		}

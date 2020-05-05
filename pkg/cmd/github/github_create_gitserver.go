@@ -3,7 +3,6 @@ package github
 import (
 	"github.com/Benbentwo/bens-binary/pkg/cmd/common"
 	"github.com/Benbentwo/utils/util"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -22,8 +21,8 @@ Adds a git server object to your ~/.bb/gitAuth.yaml configuration. You can add d
 
 	githubCreateGitserverExample = `
 bb gh create git-server
-`)
-
+`
+)
 
 func NewCmdCreateGitServerConfig(commonOpts *common.CommonOptions) *cobra.Command {
 	options := &CreateGitServerOptions{
@@ -86,30 +85,25 @@ func (o *CreateGitServerOptions) Run() error {
 		return util.MissingOption("url")
 	}
 	// configService, err := auth.NewFileAuthConfigService(GitAuthConfigFile)
-	authConfigSvc, err := clients.Factory.CreateAuthConfigService(factory, GitAuthConfigFile, "")
-	if err != nil {
-		return errors.Wrap(err, "failed to create CreateGitAuthConfigService")
-	}
-
-	util.Logger().Info("authconfigsvc: %s", authConfigSvc)
-	config := authConfigSvc.Config()
-	util.Logger().Info("1")
-	server := config.GetOrCreateServerName(gitUrl, name, kind)
-	util.Logger().Info("server: %s", server)
-	util.Logger().Info("2")
-	config.CurrentServer = gitUrl
-	util.Logger().Info("3")
-	err = authConfigSvc.SaveConfig()
-	util.Logger().Info("4")
-	if err != nil {
-		util.Logger().Info("4err")
-		return errors.Wrap(err, "failed to save GitAuthConfigService")
-	}
-	util.Logger().Infof("Added Git server %s for URL %s", util.ColorInfo(name), util.ColorInfo(gitUrl))
-
-	util.Logger().Info("5")
-	util.Logger().Var("server", server)
-	err = authConfigSvc.SaveConfig()
-	Err.Check(err)
+	// TODO reimplement this, its gross right now, do it right when I have time
+	return common.ErrorUnimplemented()
+	// authConfigSvc, err := clients.Factory.CreateAuthConfigService(factory, GitAuthConfigFile, "")
+	// if err != nil {
+	// 	return errors.Wrap(err, "failed to create CreateGitAuthConfigService")
+	// }
+	//
+	// util.Logger().Info("authconfigsvc: %s", authConfigSvc)
+	// config := authConfigSvc.Config()
+	// server := config.GetOrCreateServerName(gitUrl, name, kind)
+	// util.Logger().Info("server: %s", server)
+	// config.CurrentServer = gitUrl
+	// err = authConfigSvc.SaveConfig()
+	// if err != nil {
+	// 	return errors.Wrap(err, "failed to save GitAuthConfigService")
+	// }
+	// util.Logger().Infof("Added Git server %s for URL %s", util.ColorInfo(name), util.ColorInfo(gitUrl))
+	//
+	// err = authConfigSvc.SaveConfig()
+	// common.CheckErr(err)
 	return nil
 }

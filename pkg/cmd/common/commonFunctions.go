@@ -10,5 +10,6 @@ var (
 )
 
 func ErrorUnimplemented() error {
-	return errors.Errorf(util.ColorInfo(Shrug) + ": " + UnimplementedText)
+	util.Logger().Errorf(util.ColorInfo(Shrug) + ": " + UnimplementedText)
+	return errors.New("Unimplemented Error")
 }
