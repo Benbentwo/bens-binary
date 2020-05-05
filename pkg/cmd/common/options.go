@@ -19,6 +19,7 @@ const (
 	OptionBatchMode    = "batch-mode"
 	OptionVerbose      = "verbose"
 	OptionExperimental = "experimental"
+	Shrug              = `¯\_(ツ)_/¯`
 )
 
 type CommonOptions struct {
@@ -83,7 +84,7 @@ func DefaultBehaviorOnFatal() {
 }
 
 // Fatal prints the message (if provided) and then exits. If V(2) or greater,
-// glog.Logger().Fatal is invoked for extended information.
+// gutil.Logger().Fatal is invoked for extended information.
 func Fatal(msg string, code int) {
 	if len(msg) > 0 {
 		// add newline if needed

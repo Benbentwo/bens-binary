@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/Benbentwo/bens-binary/pkg/cmd/common"
 	"github.com/Benbentwo/bens-binary/pkg/cmd/generate"
+	"github.com/Benbentwo/bens-binary/pkg/cmd/github"
 	"github.com/Benbentwo/bens-binary/pkg/cmd/init"
 	"github.com/Benbentwo/bens-binary/pkg/version"
 	"github.com/spf13/viper"
@@ -41,6 +42,10 @@ func NewMainCmd(in terminal.FileReader, out terminal.FileWriter, err io.Writer, 
 	cmd.AddCommand(version.NewCmdVersion(commonOpts))
 	cmd.AddCommand(generate.NewCmdGenerate(commonOpts))
 	cmd.AddCommand(init.NewCmdInit(commonOpts))
+
+	if commonOpts.Experimental {
+		cmd.AddCommand(github.NewCmdGh(commonOpts))
+	}
 	return cmd
 }
 

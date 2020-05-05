@@ -2,6 +2,7 @@ package init
 
 import (
 	"github.com/Benbentwo/bens-binary/pkg/cmd/common"
+	"github.com/Benbentwo/bens-binary/pkg/cmd/github"
 	"github.com/Benbentwo/utils/log"
 	"github.com/Benbentwo/utils/util"
 	"github.com/go-errors/errors"
@@ -30,7 +31,7 @@ type InitFlags struct {
 	ProjectsDir string
 }
 
-var logs = log.Logger()
+var logs = util.Logger
 
 var (
 	initLong = `
@@ -125,7 +126,7 @@ func (o *InitOptions) Run() error {
 					if _, err = f.WriteString("export BB_HOME=" + path + carriage); err != nil {
 						panic(err)
 					}
-					log.Logger().Debugf("Updated Bash Profile to include BB_HOME")
+					util.Logger().Debugf("Updated Bash Profile to include BB_HOME")
 				}
 			}
 
@@ -140,14 +141,16 @@ func (o *InitOptions) Run() error {
 	check(err)
 
 	// Lets setup a Git Profile
-	log.Info("Looks like you do not have any git servers configured")
-	response := util.Confirm("Would you like to set one up now?", false, "Would you like to create a connection configuraiton to a git server?", o.In, o.Out, o.Err)
+	logs.Info("Looks like you do not have any git servers configured")
+	response, err := util.Confirm("Would you like to set one up now?", true, "Would you like to create a connection configuraiton to a git server?")
+	if err != nil {
+		return errors.Errorf("getting response from confirmation: %s", err)
+	}
 	if response {
 		SetupGitConfigFile(configPath, *o.CommonOptions)
 	}
-
-	log.Blank()
-	log.Logger().Infof("SUCCESS: BB Directory configured to %s", path)
+	logs.Println()
+	logs.Infof("SUCCESS: BB Directory configured to %s", path)
 	return nil
 }
 
@@ -155,9 +158,9 @@ func CreateFileIfNotFound(configPath string) error {
 	exists, err := util.FileExists(configPath)
 	check(err)
 	if exists {
-		log.Logger().Infof(configPath + " file found.")
+		util.Logger().Infof(configPath + " file found.")
 	} else {
-		log.Logger().Infof(configPath + " file NOT found, creating...")
+		util.Logger().Infof(configPath + " file NOT found, creating...")
 		_, err = os.Create(configPath)
 		if err != nil {
 			return err
@@ -198,16 +201,16 @@ func SetupGitConfigFile(configPath string, o common.CommonOptions) {
 
 	if !hasServers {
 
-		serverName, err := util.PickValue("Git Server Name:", "", true, "What would you like to name this gitServer?", o.In, o.Out, o.Err)
+		serverName, err := util.PickValue("Git Server Name:", "","What would you like to name this gitServer?", false)
 		if err != nil {
 			panic(err)
 		}
-		kind, err := util.PickName(github.ServerTypes, "What Git Server would you like to add", "What is your remote repository kind?", o.In, o.Out, o.Err)
+		kind, err := util.Pick( "Which Git Server would you like to add", github.ServerTypes,"What is your remote repository kind?")
 		if err != nil {
 			panic(err)
 		}
 		defaultUrl := github.GetDefaultUrlFromGitServer(kind)
-		url, err := util.PickValue("Git Server URL:", defaultUrl, true, "What would you like to name this gitServer?", o.In, o.Out, o.Err)
+		url, err := util.PickValue("Git Server URL:", defaultUrl, "What would you like to name this gitServer?",false)
 		if err != nil {
 			panic(err)
 		}

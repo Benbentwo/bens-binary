@@ -8,17 +8,17 @@ import (
 )
 
 func UninstallAll() error {
-	err := UninstallConfig()
+	err := Config()
 	if err != nil {
 		return errors.Wrapf(err, "%s")
 	}
-	err = UninstallBinary()
+	err = Binary()
 	if err != nil {
 		return errors.Wrapf(err, "%s")
 	}
 	return nil
 }
-func UninstallConfig() error {
+func Config() error {
 	err := os.RemoveAll(util.HomeReplace("~/.bb"))
 	if err != nil {
 		return errors.Errorf("Couldn't delete ~/.bb directory")
@@ -26,7 +26,7 @@ func UninstallConfig() error {
 	return nil
 }
 
-func UninstallBinary() error {
+func Binary() error {
 	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
 		return errors.Errorf("Couldn't delete Binary at %s", dir)
@@ -38,7 +38,7 @@ func UninstallBinary() error {
 	return nil
 }
 
-//TODO finish implementing
+// TODO finish implementing
 func UnsetBBHome() error {
 	line := 0
 	for line != -1 {

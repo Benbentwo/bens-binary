@@ -21,6 +21,10 @@ import (
 
 var githubClient *github.Client
 
+func GetClient() *github.Client {
+	return githubClient
+}
+
 // fetches a sem ver without v prefix
 func GetLatestVersionFromGitHub(githubOwner, githubRepo string) (semver.Version, string, error) {
 	text, prefix, err := GetLatestVersionStringFromGitHub(githubOwner, githubRepo)

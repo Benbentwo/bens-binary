@@ -1,4 +1,4 @@
-package jenkins
+package github
 
 import (
 	"github.com/Benbentwo/bens-binary/pkg/cmd/common"
@@ -7,31 +7,31 @@ import (
 )
 
 // options for the command
-type JenkinsConnectOptions struct {
+type GithubCreate_profileOptions struct {
 	*common.CommonOptions
 	batch bool
 }
 
 var (
-	jenkinsConnectLong = `
-Sets up a jenkins job for a repository and sets up webhooks for that repository
+	githubCreateProfileLong = `
+Create a github profile for GH or GHE and add to your ~/.bb folder
 `
 
-	jenkinsConnectExample = `
-bb jenkins connect
-`
-)
+	githubCreateProfileExample = `
+bb gh create profile
+`)
 
-func NewCmdJenkinsConnect(commonOpts *common.CommonOptions) *cobra.Command {
-	options := &JenkinsConnectOptions{
+
+func NewCmdGithubCreate_profile(commonOpts *common.CommonOptions) *cobra.Command {
+	options := &GithubCreate_profileOptions{
 		CommonOptions: commonOpts,
 	}
 
 	cmd := &cobra.Command{
-		Use:     "connect",
-		Short:   "connect a repo to jenkins",
-		Long:    jenkinsConnectLong,
-		Example: jenkinsConnectExample,
+		Use:     "profile",
+		Short:   "create a github profile",
+		Long:    githubCreateProfileLong,
+		Example: githubCreateProfileExample,
 		Run: func(cmd *cobra.Command, args []string) {
 			options.Cmd = cmd
 			options.Args = args
@@ -44,7 +44,7 @@ func NewCmdJenkinsConnect(commonOpts *common.CommonOptions) *cobra.Command {
 }
 
 // Run implements this command
-func (o *JenkinsConnectOptions) Run() error {
+func (o *GithubCreate_profileOptions) Run() error {
 	util.Logger().Infof("Congratulations generating %s", o.Cmd.Use)
 	return nil
 }

@@ -1,12 +1,9 @@
 package uninstall
 
 import (
-	"github.com/jenkins-x/jx/pkg/cmd/helper"
+	"github.com/Benbentwo/bens-binary/pkg/cmd/common"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-
-	"github.com/jenkins-x/jx/pkg/cmd/opts"
-	"github.com/jenkins-x/jx/pkg/cmd/templates"
 )
 
 // GetAddonOptions the command line options
@@ -15,15 +12,15 @@ type UninstallBinaryOptions struct {
 }
 
 var (
-	uninstall_binary_long = templates.LongDesc(`
+	uninstall_binary_long = `
 		Uninstalls the BB binary from your machine
 
-`)
+`
 
-	uninstall_binary_example = templates.Examples(`
+	uninstall_binary_example = `
 		# Uninstall the binary
 		bb uninstall binary
-	`)
+	`
 )
 
 func NewCmdUninstallBinary(commonOpts *common.CommonOptions) *cobra.Command {
@@ -52,7 +49,7 @@ func NewCmdUninstallBinary(commonOpts *common.CommonOptions) *cobra.Command {
 // Run implements this command
 func (o *UninstallBinaryOptions) Run() error {
 
-	err := UninstallBinary()
+	err := Binary()
 	if err != nil {
 		return errors.Wrapf(err, "Uninstall binary command failed.")
 	}

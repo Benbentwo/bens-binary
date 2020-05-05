@@ -1,4 +1,4 @@
-package jenkins
+package github
 
 import (
 	"github.com/Benbentwo/bens-binary/pkg/cmd/common"
@@ -6,18 +6,17 @@ import (
 )
 
 // options for the command
-type JenkinsOptions struct {
+type GhOptions struct {
 	*common.CommonOptions
 }
 
-func NewCmdJenkins(commonOpts *common.CommonOptions) *cobra.Command {
-	options := &JenkinsOptions{
+func NewCmdGh(commonOpts *common.CommonOptions) *cobra.Command {
+	options := &GhOptions{
 		CommonOptions: commonOpts,
 	}
 
 	cmd := &cobra.Command{
-		Use:   "jenkins",
-		Short: "Jenkins Utilities and base command",
+		Use: "gh",
 		Run: func(cmd *cobra.Command, args []string) {
 			options.Cmd = cmd
 			options.Args = args
@@ -25,20 +24,21 @@ func NewCmdJenkins(commonOpts *common.CommonOptions) *cobra.Command {
 			common.CheckErr(err)
 		},
 	}
-	options.AddJenkinsFlags(cmd)
+	options.AddGhFlags(cmd)
 	// the line below (Section to...) is for the generate-function command to add a template_command to.
 	// the line above this and below can be deleted.
 	// DO NOT DELETE THE FOLLOWING LINE:
 	// Section to add commands to:
-	cmd.AddCommand(NewCmdJenkinsConnect(commonOpts))
+	cmd.AddCommand(NewCmdCreate(commonOpts))
+
 	return cmd
 }
 
 // Run implements this command
-func (o *JenkinsOptions) Run() error {
+func (o *GhOptions) Run() error {
 	return o.Cmd.Help()
 }
 
-func (o *JenkinsOptions) AddJenkinsFlags(cmd *cobra.Command) {
+func (o *GhOptions) AddGhFlags(cmd *cobra.Command) {
 	o.Cmd = cmd
 }

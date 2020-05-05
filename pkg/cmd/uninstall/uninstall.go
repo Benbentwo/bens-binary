@@ -1,9 +1,7 @@
 package uninstall
 
 import (
-	"github.com/jenkins-x/jx/pkg/cmd/helper"
-	"github.com/jenkins-x/jx/pkg/cmd/opts"
-	"github.com/jenkins-x/jx/pkg/cmd/templates"
+	"github.com/Benbentwo/bens-binary/pkg/cmd/common"
 	"github.com/spf13/cobra"
 )
 
@@ -14,7 +12,7 @@ type UninstallOptions struct {
 }
 
 const (
-	uninstall_resources = `uninstall options include:
+	uninstallResources = `uninstall options include:
 
     * config
     * binary
@@ -23,14 +21,14 @@ const (
 )
 
 var (
-	get_long = templates.LongDesc(`
+	getLong = `
 		Uninstalls one or more resources.
 
-		` + uninstall_resources + `
+		` + uninstallResources + `
 
-`)
+`
 
-	get_example = templates.Examples(`
+	getExample = `
 		# uninstall the binary
 			bb uninstall binary
 
@@ -41,7 +39,7 @@ var (
 			bb uninstall -a
 			# or
 			bb uninstall --all
-	`)
+	`
 )
 
 // NewCmdGet creates a command object for the generic "get" action, which
@@ -54,8 +52,8 @@ func NewCmdUninstall(commonOpts *common.CommonOptions) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "uninstall TYPE [flags]",
 		Short:   "Uninstall one or more resources",
-		Long:    get_long,
-		Example: get_example,
+		Long:    getLong,
+		Example: getExample,
 		Run: func(cmd *cobra.Command, args []string) {
 			options.Cmd = cmd
 			options.Args = args

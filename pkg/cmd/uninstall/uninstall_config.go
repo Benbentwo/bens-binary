@@ -1,36 +1,32 @@
 package uninstall
 
 import (
-	"github.com/jenkins-x/jx/pkg/cmd/helper"
+	"github.com/Benbentwo/bens-binary/pkg/cmd/common"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-
-	"github.com/jenkins-x/jx/pkg/cmd/opts"
-	"github.com/jenkins-x/jx/pkg/cmd/templates"
 )
 
 // GetAddonOptions the command line options
-type UninstallConfigOptions struct {
+type ConfigOptions struct {
 	UninstallOptions
 }
 
 var (
-	uninstall_config_long = templates.LongDesc(`
+	uninstallConfigLong = `
 		Wipes the BB Binary's configuration from your machine,
 		this allows you to reconfigure it with new settings.
 
 		essentially runs "rm -rf ~/.bb"
 
-`)
-
-	uninstall_config_example = templates.Examples(`
+`
+	uninstallConfigExample = `
 		# Uninstall the configuration
 		bb uninstall config
-	`)
+	`
 )
 
 func NewCmdUninstallConfig(commonOpts *common.CommonOptions) *cobra.Command {
-	options := &UninstallConfigOptions{
+	options := &ConfigOptions{
 		UninstallOptions: UninstallOptions{
 			CommonOptions: commonOpts,
 		},
@@ -39,8 +35,8 @@ func NewCmdUninstallConfig(commonOpts *common.CommonOptions) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "config [flags]",
 		Short:   "Uninstalls the binary",
-		Long:    uninstall_config_long,
-		Example: uninstall_config_example,
+		Long:    uninstallConfigLong,
+		Example: uninstallConfigExample,
 		Run: func(cmd *cobra.Command, args []string) {
 			options.Cmd = cmd
 			options.Args = args
@@ -53,9 +49,9 @@ func NewCmdUninstallConfig(commonOpts *common.CommonOptions) *cobra.Command {
 }
 
 // Run implements this command
-func (o *UninstallConfigOptions) Run() error {
+func (o *ConfigOptions) Run() error {
 
-	err := UninstallConfig()
+	err := Config()
 	if err != nil {
 		return errors.Wrapf(err, "Uninstall Config command failed.")
 	}

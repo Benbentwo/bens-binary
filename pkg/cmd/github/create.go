@@ -1,4 +1,4 @@
-package jenkins
+package github
 
 import (
 	"github.com/Benbentwo/bens-binary/pkg/cmd/common"
@@ -6,18 +6,19 @@ import (
 )
 
 // options for the command
-type JenkinsOptions struct {
+type CreateOptions struct {
 	*common.CommonOptions
+	DisableImport bool
+	OutDir        string
 }
 
-func NewCmdJenkins(commonOpts *common.CommonOptions) *cobra.Command {
-	options := &JenkinsOptions{
+func NewCmdCreate(commonOpts *common.CommonOptions) *cobra.Command {
+	options := &CreateOptions{
 		CommonOptions: commonOpts,
 	}
 
 	cmd := &cobra.Command{
-		Use:   "jenkins",
-		Short: "Jenkins Utilities and base command",
+		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
 			options.Cmd = cmd
 			options.Args = args
@@ -25,20 +26,23 @@ func NewCmdJenkins(commonOpts *common.CommonOptions) *cobra.Command {
 			common.CheckErr(err)
 		},
 	}
-	options.AddJenkinsFlags(cmd)
+	options.AddCreateFlags(cmd)
 	// the line below (Section to...) is for the generate-function command to add a template_command to.
 	// the line above this and below can be deleted.
 	// DO NOT DELETE THE FOLLOWING LINE:
 	// Section to add commands to:
-	cmd.AddCommand(NewCmdJenkinsConnect(commonOpts))
+	cmd.AddCommand(NewCmdCreateGitServerConfig(commonOpts))
+	cmd.AddCommand(NewCmdGithubCreate_profile(commonOpts))
+	cmd.AddCommand(NewCmdGithubCreate_issue(commonOpts))
+
 	return cmd
 }
 
 // Run implements this command
-func (o *JenkinsOptions) Run() error {
+func (o *CreateOptions) Run() error {
 	return o.Cmd.Help()
 }
 
-func (o *JenkinsOptions) AddJenkinsFlags(cmd *cobra.Command) {
+func (o *CreateOptions) AddCreateFlags(cmd *cobra.Command) {
 	o.Cmd = cmd
 }
