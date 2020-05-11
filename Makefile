@@ -1,6 +1,8 @@
 GIT_SERVER 	:= github.com
 ORG			:= Benbentwo
-REPO        := go-bin-generic
+#ORG			:= $(shell git remote get-url origin | awk -F '/' '{print $4}')
+REPO        := bens-binary
+#REPO        := $(shell git remote get-url origin | awk -F '/' '{print $5}')
 BINARY 		:= bb
 
 # Pretty Constant stuff Below, Configurable above
