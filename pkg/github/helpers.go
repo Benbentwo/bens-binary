@@ -110,7 +110,7 @@ func GetLatestReleaseFromGitHubURL(gitURL string) (string, error) {
 }
 
 func getLatestReleaseFromGithubUsingApi(githubOwner, githubRepo string) (string, error) {
-	client, release, resp, err := preamble()
+	client, release, resp, err := Preamble()
 	release, resp, err = client.Repositories.GetLatestRelease(context.Background(), githubOwner, githubRepo)
 	if err != nil {
 		return "", errors.Wrapf(err, "getting latest version for github.com/%s/%s", githubOwner, githubRepo)
@@ -194,7 +194,7 @@ func GetLatestTagFromGithub(githubOwner, githubRepo string) (string, error) {
 
 // GetTagsFromGithub gets the list of tags on a specific github repo
 func GetTagsFromGithub(githubOwner, githubRepo string) ([]*github.RepositoryTag, error) {
-	client, _, resp, err := preamble()
+	client, _, resp, err := Preamble()
 
 	tags, resp, err := client.Repositories.ListTags(context.Background(), githubOwner, githubRepo, nil)
 	defer resp.Body.Close()
@@ -205,7 +205,7 @@ func GetTagsFromGithub(githubOwner, githubRepo string) ([]*github.RepositoryTag,
 	return tags, nil
 }
 
-func preamble() (*github.Client, *github.RepositoryRelease, *github.Response, error) {
+func Preamble() (*github.Client, *github.RepositoryRelease, *github.Response, error) {
 	if githubClient == nil {
 		token := os.Getenv("GH_TOKEN")
 		var tc *http.Client
