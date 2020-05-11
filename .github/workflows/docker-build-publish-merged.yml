@@ -32,6 +32,9 @@ jobs:
         id: get-release-type
         run: |
           if [[ "${{github.event.pull_request.state}}" == "closed" ]] || [[ "${{github.event.pull_request.merged}}" == "true" ]]; then
+            echo "Setting Defaults to patch"
+            echo "##[set-output name=release-type;]patch"
+            echo "##[set-output name=release-command;]-p"
             echo "##[set-output name=merged;]true"
             echo '${{toJson(github.event.pull_request)}}' > data.json
             jq -r '.labels[] | .name' data.json > labels.txt
