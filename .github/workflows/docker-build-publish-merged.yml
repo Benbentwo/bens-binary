@@ -10,12 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged
     steps:
-      - run: |
-          echo '${{toJson(github.event.pull_request)}}' > pr.json
-      - name: Artifact Binaries
-        uses: actions/upload-artifact@v2
-        with:
-          path: pr.json
+#      - run: |
+#          echo '${{toJson(github.event.pull_request)}}' > pr.json
+#      - name: Artifact Binaries
+#        uses: actions/upload-artifact@v2
+#        with:
+#          path: pr.json
       - name: Setup Go environment
         if: github.event.pull_request.merged
         uses: actions/setup-go@v2.0.3
@@ -64,11 +64,6 @@ jobs:
             echo "##[set-output name=release-type;]patch"
             echo "##[set-output name=release-command;]-p"
           fi
-
-      - name: Debug Above Step
-        run: |
-          echo "${{steps.get-release-type.outputs.release-command}}"
-          echo "${{steps.get-release-type.outputs.release-type}}"
       # https://github.com/Benbentwo/increment-semver
       - name: Increment Step Patch
         if: github.event.pull_request.merged
