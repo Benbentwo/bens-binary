@@ -6,6 +6,7 @@ import (
 	"github.com/Benbentwo/bens-binary/pkg/cmd/common"
 	github_helpers "github.com/Benbentwo/bens-binary/pkg/github"
 	"github.com/Benbentwo/utils/util"
+	"github.com/google/go-github/github"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"io"
@@ -19,7 +20,7 @@ import (
 
 // This should be found in the template_base.txt
 const BASE_COMMAND_INSERT_LINE = `Section to add commands to:`
-const BASE_COMMAND_TEMPLATE = `template_base.txt`
+const BASE_COMMAND_TEMPLATE = `template_base_v0.go`
 
 // https://gist.github.com/Benbentwo/7f0d31820b4228864ba4dc00fb17767b
 const DefaultGistForTemplates = "7f0d31820b4228864ba4dc00fb17767b"
@@ -103,7 +104,14 @@ func NewCmdGenerateFunction(commonOpts *common.CommonOptions) *cobra.Command {
 
 // Run implements this command
 func (o *GenerateFunctionOptions) Run() error {
-	var err error
+
+	client, _, _, err := github_helpers.Preamble()
+	if err != nil {
+		return errors.Errorf("getting github client: %s", err)
+	}
+
+	var isGist bool
+	var thisGist *github.Gist
 	localTemplates := "./templates"
 	ex, err := util.DirExists(localTemplates)
 	availableTemplates := make([]string, 0)
@@ -113,14 +121,29 @@ func (o *GenerateFunctionOptions) Run() error {
 		availableTemplates = util.ListFilesInDirFilter(localTemplates, `(.*\.txt)`)
 	} else {
 		// TODO get Files from GIST
-		return common.ErrorUnimplemented()
-		_, _, _ = github_helpers.GetClient().Gists.Get(context.Background(), DefaultGistForTemplates)
-		// 	TODO
-		// parse Gists object files into readable Templates
+		util.Logger().Info("Using " + util.ColorInfo("Gist") + " as " + util.ColorInfo("Template Source"))
+		gist, resp, err := client.Gists.Get(context.Background(), DefaultGistForTemplates)
+		if err != nil {
+			return errors.Errorf("getting gist failed: %s", err)
+		}
+		if resp.StatusCode >= 300 {
+			return errors.Errorf("getting gist failed, response code %d: %s", resp.StatusCode, err)
+		}
+
+		for filename := range gist.Files {
+			if strings.HasSuffix(string(filename), ".go") {
+				availableTemplates = append(availableTemplates, *gist.Files[filename].Filename)
+				isGist = true
+			}
+		}
+		thisGist = gist
 	}
 
-	o.TemplateFile, err = util.Pick("What template would you like to use?", availableTemplates, "template_command.txt")
+	o.TemplateFile, err = util.Pick("What template would you like to use?", availableTemplates, "")
 	check(err)
+	// if isGist {
+	// 	o.TemplateFile
+	// }
 
 	var isBase = o.TemplateFile == BASE_COMMAND_TEMPLATE
 	if isBase {
@@ -212,10 +235,18 @@ func (o *GenerateFunctionOptions) Run() error {
 		}
 	}
 	//
-	var FunctionGenerationTemplate, errRead = ioutil.ReadFile("templates/" + o.TemplateFile)
-	check(errRead)
+	var codeTemplate []byte
+	if isGist {
+		gistFile := github.GistFilename(o.TemplateFile)
+		util.Logger().Debugf("File: %s", o.TemplateFile)
+		util.Logger().Debugf("GistFile: %s", gistFile)
+		codeTemplate = []byte(*thisGist.Files[gistFile].Content)
+	} else {
+		codeTemplate, err = ioutil.ReadFile("templates/" + o.TemplateFile)
+		check(err)
+	}
 
-	t := template.Must(template.New("template").Funcs(TemplateFUNctionMap).Parse(string(FunctionGenerationTemplate)))
+	t := template.Must(template.New("template").Funcs(TemplateFUNctionMap).Parse(string(codeTemplate)))
 
 	if t == nil {
 		return errors.Errorf("Unable to parse template %s", t)
@@ -291,6 +322,11 @@ func FindLineToInsertCommandTo(path string, search string) (int, error) {
 // Common practice should be make an exportable (Titled func) generic, then make a local named the same call with your default value.
 func findLineToInsertCommandTo(path string) (int, error) {
 	val, err := FindLineToInsertCommandTo(path, BASE_COMMAND_INSERT_LINE)
+	if err != nil {
+		util.Logger().Warn("Couldn't find line to insert add command onto.")
+		util.Logger().Warn("This command will not be immediately available and code changes are required.")
+		// 	TODO add info line here for the exact command to add somewhere to get it to work.
+	}
 	check(err)
 	return val, nil
 }
