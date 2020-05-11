@@ -125,3 +125,6 @@ fmt: ## Format the code
       	fi
 
 all: linux arm win win32 darwin
+
+pr:
+	body=$$(git log --graph --oneline --all HEAD..origin/master); jx create pr --base='master' --title="$(BRANCH)" --label="Release Patch" --body="$$body"
