@@ -1,6 +1,8 @@
 GIT_SERVER 	:= github.com
 ORG			:= Benbentwo
-REPO        := go-bin-generic
+#ORG			:= $(shell git remote get-url origin | awk -F '/' '{print $4}')
+REPO        := bens-binary
+#REPO        := $(shell git remote get-url origin | awk -F '/' '{print $5}')
 BINARY 		:= bb
 
 # Pretty Constant stuff Below, Configurable above
@@ -123,3 +125,6 @@ fmt: ## Format the code
       	fi
 
 all: linux arm win win32 darwin
+
+pr:
+	body=$$(git log --graph --oneline --all HEAD..origin/master); jx create pr --base='master' --title="$(BRANCH)" --label="Release Patch" --body="$$body"
