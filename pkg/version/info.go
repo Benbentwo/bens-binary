@@ -52,7 +52,7 @@ var Map = map[string]string{
 
 const (
 	// VersionPrefix string for setting pre-release etc
-	VersionPrefix = ""
+	VersionPrefix = "v"
 
 	// ExampleVersion shows an example version in the help
 	// if no version could be found (which should never really happen!)
