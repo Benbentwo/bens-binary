@@ -1,6 +1,6 @@
 module github.com/Benbentwo/bens-binary
 
-go 1.12.4
+go 1.15
 
 require (
 	github.com/Benbentwo/utils v0.0.0-20200504201201-0ceefa94a8b3

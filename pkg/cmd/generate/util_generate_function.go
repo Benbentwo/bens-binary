@@ -224,7 +224,7 @@ func (o *GenerateFunctionOptions) Run() error {
 
 	// create an empty array
 	var bases = make([]string, 0)
-	bases, err = FindBaseCommands("./pkg/cmd")
+	bases, err = FindBaseCommands("./")
 
 	// File Gen - put it down here so we don't create the file till they answer all the questions
 	// if they ctrl-c we don't want empty files cluttering our project.
