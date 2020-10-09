@@ -158,7 +158,7 @@ func (o *GenerateFunctionOptions) Run() error {
 		logs.Info("You can create new ones, and subdirectories ./pkg/cmd/a/b", nil)
 		// o.Folder, err = util.Pick(o.CommonOptions, "What Folder would you like this in (starting from pkg/cmd/...? you can create new directories", util.ListSubDirectories("./pkg/cmd/"), "dev")
 
-		o.Folder, err = util.Pick("What Folder would you like this in?", util.ListSubDirectoriesRecusively("./pkg/cmd/"), "dev")
+		o.Folder, err = util.Pick("What Folder would you like this in?", util.ListSubDirectoriesRecusively("./", true), "")
 		if err != nil {
 			return err
 		}
@@ -271,12 +271,7 @@ func (o *GenerateFunctionOptions) Run() error {
 	//   vs anything else in which case we just add the New Cmd string.
 	// Must match Template of generated function
 	if isBase {
-		if pickedBase == "pkg/cmd/cmd.go" {
-
-		} else {
-			// NewCmdDev(commonOpts *common.CommonOptions)
-			err = addNewCmdToBaseFile(pickedBase, "cmd.AddCommand(NewCmd"+strings.Title(o.CommandUse)+"(commonOpts))\n")
-		}
+		err = addNewCmdToBaseFile(pickedBase, "cmd.AddCommand(NewCmd"+strings.Title(o.CommandUse)+"(commonOpts))\n")
 	} else { // adding a generationCommand to an existing base.
 		err = addNewCmdToBaseFile(pickedBase, "\tcmd.AddCommand(NewCmd"+o.TitledFolderFilename+"(commonOpts))\n")
 	}
